@@ -18,9 +18,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionConstants.GeneralConstants;
 import frc.robot.subsystems.vision.util.VisionResult;
+import static frc.robot.subsystems.vision.util.VisionFunctions.getStdDevs;
 
 /** Add your docs here. */
 public class VisionIO_REAL implements VisionIO {
@@ -37,11 +37,16 @@ public class VisionIO_REAL implements VisionIO {
         targetYaw = new double[22];
     }
 
+    
+
     @Override
     public VisionResult[] getMeasurements() {
         VisionResult[] visionMeasurement = new VisionResult[cameras.length];
         for (int i=0; i < cameras.length; i++) {
             if (cameras[i] != null) {
+                // +-----------------------+
+                // | Do not  use this code |
+                // +-----------------------+
                 // List<PhotonPipelineResult> pipelineResults = cameras[i].getAllUnreadResults();
                 // if (pipelineResults.size() > 0) {
                 //     // may be last elem
@@ -53,7 +58,7 @@ public class VisionIO_REAL implements VisionIO {
                 PhotonPipelineResult result = cameras[i].getLatestResult();
                 Optional<EstimatedRobotPose> estimatedPose = poseEstimators[i].update(result);
                 if (estimatedPose.isPresent()) {
-                    visionMeasurement[i] = new VisionResult(estimatedPose.get().estimatedPose, Timer.getFPGATimestamp());
+                    visionMeasurement[i] = new VisionResult(estimatedPose.get().estimatedPose, Timer.getFPGATimestamp(), getStdDevs(cameras[i], estimatedPose.get().estimatedPose.toPose2d(), poseEstimators[i]));
                 }
             }
         }
@@ -96,4 +101,16 @@ public class VisionIO_REAL implements VisionIO {
         return targetYaw;
     }
 
+
+
+    @Override
+    public PhotonPipelineResult getLatestCameraResult(int cameraIndex) {
+        if (cameraIndex > cameras.length-1) {
+            throw new Error("Camera Index is greater than length");
+        }
+        if (cameraIndex < 0) {
+            throw new Error("Camera Index is less than 0");
+        }
+        return cameras[cameraIndex].getLatestResult();
+    }
 }

@@ -26,7 +26,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionConstants.GeneralConstants;
 import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
@@ -91,7 +90,6 @@ public class VisionIO_SIM implements VisionIO {
         }
        
         Pose3d[] targetPoses = new Pose3d[22];
-        PhotonTrackedTarget[][] cameraTargets = new PhotonTrackedTarget[cameras.length][] ;
         for (PhotonCamera camera : cameras) {
             List<PhotonPipelineResult> results = camera.getAllUnreadResults();
             if (results.size() > 0) {
@@ -117,10 +115,20 @@ public class VisionIO_SIM implements VisionIO {
         }
         Logger.recordOutput("Target Poses", targetPoses);
 	}
-    
 
     @Override
     public double[] getTagYaw() {
         return targetYaw;
+    }
+
+    @Override
+    public PhotonPipelineResult getLatestCameraResult(int cameraIndex) {
+        if (cameraIndex > cameras.length-1) {
+            throw new Error("Camera Index is greater than length");
+        }
+        if (cameraIndex < 0) {
+            throw new Error("Camera Index is less than 0");
+        }
+        return simCameras[cameraIndex].getCamera().getLatestResult();
     }
 }
