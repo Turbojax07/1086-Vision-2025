@@ -20,20 +20,18 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.subsystems.vision.VisionConstants.GeneralConstants;
-
-import static frc.robot.subsystems.vision.VisionConstants.GeneralConstants.*;
+import frc.robot.subsystems.vision.VisionConstants;
 
 /** Add your docs here. */
 public class VisionFunctions {
     public static Pose3d calculateMultiTagResult(MultiTargetPNPResult result, Transform3d robotToCameraTransform) {
         Transform3d fieldToCamera = result.estimatedPose.best;
-        Pose3d estimatedPose = new Pose3d().plus(fieldToCamera).relativeTo(AprilTagFieldLayout.loadField(GeneralConstants.field).getOrigin()).plus(robotToCameraTransform.inverse());
+        Pose3d estimatedPose = new Pose3d().plus(fieldToCamera).relativeTo(AprilTagFieldLayout.loadField(VisionConstants.field).getOrigin()).plus(robotToCameraTransform.inverse());
         return estimatedPose;
     }
 
     public static Matrix<N3, N1> getStdDevs(PhotonCamera camera, Pose2d estimatedPose, PhotonPoseEstimator poseEstimator) {
-        Matrix<N3, N1> estStdDevs = singleTagStdDevs;
+        Matrix<N3, N1> estStdDevs = VisionConstants.singleTagStdDevs;
         List<PhotonTrackedTarget> targets = camera.getLatestResult().targets;
         int numTags = 0;
         double avgDist = 0;
@@ -52,7 +50,7 @@ public class VisionFunctions {
 
         avgDist /= numTags;
         if (numTags > 1) {
-            estStdDevs = multiTagStdDevs;
+            estStdDevs = VisionConstants.multiTagStdDevs;
         }
 
         if (numTags == 1 && avgDist > 4) {

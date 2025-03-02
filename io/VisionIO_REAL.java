@@ -1,12 +1,17 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.vision.io;
 
+import static frc.robot.subsystems.vision.util.VisionFunctions.getStdDevs;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.util.VisionResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -14,25 +19,17 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.vision.VisionConstants.GeneralConstants;
-import frc.robot.subsystems.vision.util.VisionResult;
-import static frc.robot.subsystems.vision.util.VisionFunctions.getStdDevs;
-
 /** Add your docs here. */
 public class VisionIO_REAL implements VisionIO {
     PhotonCamera[] cameras;
     PhotonPoseEstimator[] poseEstimators;
     double[] targetYaw;
     public VisionIO_REAL() {
-        cameras = new PhotonCamera[GeneralConstants.CameraIDs.length];
+        cameras = new PhotonCamera[VisionConstants.CameraIDs.length];
         poseEstimators = new PhotonPoseEstimator[cameras.length];
         for (int i=0; i < cameras.length; i++) {
-            cameras[i] = new PhotonCamera(GeneralConstants.CameraIDs[i]);
-            poseEstimators[i] = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(GeneralConstants.field), GeneralConstants.strategy, GeneralConstants.CameraTransforms[i]);
+            cameras[i] = new PhotonCamera(VisionConstants.CameraIDs[i]);
+            poseEstimators[i] = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(VisionConstants.field), VisionConstants.strategy, VisionConstants.CameraTransforms[i]);
         }
         targetYaw = new double[22];
     }
@@ -59,7 +56,7 @@ public class VisionIO_REAL implements VisionIO {
                 Optional<EstimatedRobotPose> estimatedPose = poseEstimators[i].update(result);
                 if (estimatedPose.isPresent()) {
                     visionMeasurement[i] = new VisionResult(estimatedPose.get().estimatedPose, Timer.getFPGATimestamp(), getStdDevs(cameras[i], estimatedPose.get().estimatedPose.toPose2d(), poseEstimators[i]));
-                }
+        }
             }
         }
         return visionMeasurement;
@@ -77,7 +74,7 @@ public class VisionIO_REAL implements VisionIO {
                     PhotonTrackedTarget[] trackedTargets = new PhotonTrackedTarget[targets.size()];
                     if (targets.size() > 0) {
                         for (int t=0; t<targets.size(); t++) {
-                            Optional<Pose3d> targetPose = AprilTagFieldLayout.loadField(GeneralConstants.field).getTagPose(targets.get(t).getFiducialId());
+                            Optional<Pose3d> targetPose = AprilTagFieldLayout.loadField(VisionConstants.field).getTagPose(targets.get(t).getFiducialId());
                             trackedTargets[t] = targets.get(t);
                             targetYaw[targets.get(t).fiducialId-1] = targets.get(t).yaw;
                             if (targetPose.isPresent()) {

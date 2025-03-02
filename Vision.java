@@ -11,14 +11,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.VisionConstants.GeneralConstants;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.io.VisionIO;
 import frc.robot.subsystems.vision.io.VisionIO_REAL;
 import frc.robot.subsystems.vision.io.VisionIO_SIM;
 import frc.robot.subsystems.vision.util.VisionResult;
 
 public class Vision extends SubsystemBase {
-  /** Creates a new Vision. */
+    /** Creates a new Vision. */
   Pose2d currentPose;
   VisionIO io;
   VisionResult[] lastResult;
@@ -29,14 +29,14 @@ public class Vision extends SubsystemBase {
       io = new VisionIO_SIM();
     }
     currentPose = new Pose2d();
-    lastResult = new VisionResult[GeneralConstants.CameraIDs.length];
-  }
+    lastResult = new VisionResult[VisionConstants.CameraIDs.length];
+    }
 
   public VisionResult[] getVisionMeasurements() {
     return io.getMeasurements();
-  }
+    }
 
-  public void update(Pose2d pose) {
+    public void update(Pose2d pose) {
     currentPose = pose;
     io.update(pose);
   }
@@ -44,10 +44,10 @@ public class Vision extends SubsystemBase {
   public double getTargetYaw(int targetID) {
     double[] tagYaws = io.getTagYaw();
     return tagYaws[targetID-1];
-  }
+    }
 
-  @Override
-  public void periodic() {
+    @Override
+    public void periodic() {
     update(new Pose2d());
     VisionResult[] measuredPoses = getVisionMeasurements();
     Logger.recordOutput("Cameras/Active", true);
@@ -70,8 +70,8 @@ public class Vision extends SubsystemBase {
     for (int i=0; i<measuredPoses.length; i++) {
       if (measuredPoses[i] == null && lastResult[i] != null) {
         measuredPoses[i] = lastResult[i];
-      }
+        }
     }
     lastResult = measuredPoses;
-  }
+    }
 }

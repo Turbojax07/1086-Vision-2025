@@ -4,7 +4,8 @@
 
 package frc.robot.subsystems.vision.io;
 
-import java.util.List;
+import frc.robot.subsystems.vision.VisionConstants;
+import java.util.List; 
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
@@ -26,7 +27,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.vision.VisionConstants.GeneralConstants;
 import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
 
@@ -45,16 +45,15 @@ public class VisionIO_SIM implements VisionIO {
         camProperties.setFPS(90);
         // camProperties.setAvgLatencyMs(35);
         // camProperties.setLatencyStdDevMs(5);
-        cameras = new PhotonCamera[GeneralConstants.CameraIDs.length];
-        simCameras = new PhotonCameraSim[GeneralConstants.CameraIDs.length];
+        cameras = new PhotonCamera[VisionConstants.CameraIDs.length];
+        simCameras = new PhotonCameraSim[VisionConstants.CameraIDs.length];
         poseEstimators = new PhotonPoseEstimator[cameras.length];
         visionSim = new VisionSystemSim("visionSim");
-        visionSim.addAprilTags(AprilTagFieldLayout.loadField(GeneralConstants.field));
+        visionSim.addAprilTags(AprilTagFieldLayout.loadField(VisionConstants.field));
         for (int i=0; i<cameras.length; i++) {
-            cameras[i] = new PhotonCamera(GeneralConstants.CameraIDs[i]);
+            cameras[i] = new PhotonCamera(VisionConstants.CameraIDs[i]);
             simCameras[i] = new PhotonCameraSim(cameras[i], camProperties);
-            poseEstimators[i] = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(GeneralConstants.field), GeneralConstants.strategy, GeneralConstants.CameraTransforms[i]);
-            // poseEstimators[i].setMultiTagFallbackStrategy(GeneralConstants.fallbackStrategy);
+            poseEstimators[i] = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(VisionConstants.field), VisionConstants.strategy, VisionConstants.CameraTransforms[i]);
             visionSim.addCamera(simCameras[i], poseEstimators[i].getRobotToCameraTransform());
         }
         targetYaw = new double[22];
@@ -78,7 +77,7 @@ public class VisionIO_SIM implements VisionIO {
             // if (pose.isPresent()) {
             //     visionMeasurements[i] = new VisionResult(pose.get().estimatedPose, pose.get().timestampSeconds);
             // }
-        }
+            }
         return visionMeasurements;
     }
 
@@ -98,7 +97,7 @@ public class VisionIO_SIM implements VisionIO {
                     PhotonTrackedTarget[] trackedTargets = new PhotonTrackedTarget[targets.size()];
                     if (targets.size() > 0) {
                         for (int t=0; t<targets.size(); t++) {
-                            Optional<Pose3d> targetPose = AprilTagFieldLayout.loadField(GeneralConstants.field).getTagPose(targets.get(t).getFiducialId());
+                            Optional<Pose3d> targetPose = AprilTagFieldLayout.loadField(VisionConstants.field).getTagPose(targets.get(t).getFiducialId());
                             trackedTargets[t] = targets.get(t);
                             if (targetPose.isPresent()) {
                                 targetPoses[targets.get(t).fiducialId-1] = targetPose.get();
@@ -130,5 +129,5 @@ public class VisionIO_SIM implements VisionIO {
             throw new Error("Camera Index is less than 0");
         }
         return simCameras[cameraIndex].getCamera().getLatestResult();
-    }
+	}
 }
