@@ -29,7 +29,7 @@ public class Vision extends SubsystemBase {
 
         for (int i = 0; i < measuredPoses.length; i++) {
             if (measuredPoses[i] != null) {
-                Logger.recordOutput("Cameras/Camera #"+(i+1)+" Estimated Pose", measuredPoses[i].getPose2d());
+                Logger.recordOutput("/Vision/Camera #" + (i + 1) + "/Estimated Pose", measuredPoses[i].getPose2d());
             }
         }
     }
