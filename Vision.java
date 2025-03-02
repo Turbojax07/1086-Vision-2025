@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.io.VisionIO;
-import frc.robot.subsystems.vision.io.VisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.util.VisionResult;
 import org.littletonrobotics.junction.Logger;
 
@@ -15,22 +14,22 @@ public class Vision extends SubsystemBase {
         this.io = io;
     }
 
-    public VisionResult[] getVisionMeasurements() {
-        return io.getMeasurements();
+    public VisionResult[] getUnreadResults() {
+        return io.getUnreadResults();
     }
 
     public void update(Pose2d pose) {
-        io.update(pose);
+        io.setRobotPose(pose);
     }
 
     @Override
     public void periodic() {
-        VisionResult[] measuredPoses = getVisionMeasurements();
+        io.updateInputs();
+
+        VisionResult[] measuredPoses = getUnreadResults();
 
         for (int i = 0; i < measuredPoses.length; i++) {
-            if (measuredPoses[i] != null) {
-                Logger.recordOutput("/Vision/Camera #" + (i + 1) + "/Estimated Pose", measuredPoses[i].getPose2d());
-            }
+            Logger.recordOutput("/Vision/Camera" + (i + 1) + "/Estimated Pose", measuredPoses[i].getPose2d());
         }
     }
 }

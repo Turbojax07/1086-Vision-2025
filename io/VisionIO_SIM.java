@@ -15,19 +15,11 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
 
 /** Add your docs here. */
@@ -36,7 +28,8 @@ public class VisionIO_SIM implements VisionIO {
     PhotonCameraSim[] simCameras;
     VisionSystemSim visionSim;
     PhotonPoseEstimator[] poseEstimators;
-    double[] targetYaw;
+
+    VisionIOInputsAutoLogged inputs;
 
     public VisionIO_SIM() {
         SimCameraProperties camProperties = new SimCameraProperties();
@@ -56,11 +49,19 @@ public class VisionIO_SIM implements VisionIO {
             poseEstimators[i] = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(VisionConstants.field), VisionConstants.strategy, VisionConstants.CameraTransforms[i]);
             visionSim.addCamera(simCameras[i], poseEstimators[i].getRobotToCameraTransform());
         }
-        targetYaw = new double[22];
+
+        inputs = new VisionIOInputsAutoLogged();
     }
 
     @Override
-    public VisionResult[] getMeasurements() {
+    public void updateInputs() {
+        inputs.unreadResults = getUnreadResults();
+
+        Logger.processInputs("/Vision/Cameras", inputs);
+    }
+
+    @Override
+    public VisionResult[] getUnreadResults() {
         Logger.recordOutput("Cameras/Measuring", true);
         VisionResult[] visionMeasurements = new VisionResult[simCameras.length];
         for (int i=0; i<simCameras.length; i++) {
@@ -82,52 +83,7 @@ public class VisionIO_SIM implements VisionIO {
     }
 
 	@Override
-	public void update(Pose2d pose) {
+	public void setRobotPose(Pose2d pose) {
 		visionSim.update(pose);
-        for (int i=0; i<poseEstimators.length; i++) {
-            poseEstimators[i].setReferencePose(pose);
-        }
-       
-        Pose3d[] targetPoses = new Pose3d[22];
-        for (PhotonCamera camera : cameras) {
-            List<PhotonPipelineResult> results = camera.getAllUnreadResults();
-            if (results.size() > 0) {
-                for (int i=0; i<results.size(); i++) {
-                    List<PhotonTrackedTarget> targets = results.get(i).getTargets();
-                    PhotonTrackedTarget[] trackedTargets = new PhotonTrackedTarget[targets.size()];
-                    if (targets.size() > 0) {
-                        for (int t=0; t<targets.size(); t++) {
-                            Optional<Pose3d> targetPose = AprilTagFieldLayout.loadField(VisionConstants.field).getTagPose(targets.get(t).getFiducialId());
-                            trackedTargets[t] = targets.get(t);
-                            if (targetPose.isPresent()) {
-                                targetPoses[targets.get(t).fiducialId-1] = targetPose.get();
-                            }   
-                        }
-                    }
-                }
-            } 
-        }
-        for (int i=0; i<targetPoses.length; i++) {
-            if (targetPoses[i] == null) {
-                targetPoses[i] = new Pose3d(pose);
-            }
-        }
-        Logger.recordOutput("Target Poses", targetPoses);
-	}
-
-    @Override
-    public double[] getTagYaw() {
-        return targetYaw;
-    }
-
-    @Override
-    public PhotonPipelineResult getLatestCameraResult(int cameraIndex) {
-        if (cameraIndex > cameras.length-1) {
-            throw new Error("Camera Index is greater than length");
-        }
-        if (cameraIndex < 0) {
-            throw new Error("Camera Index is less than 0");
-        }
-        return simCameras[cameraIndex].getCamera().getLatestResult();
 	}
 }
