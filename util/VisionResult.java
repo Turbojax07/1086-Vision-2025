@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.math.Matrix;
@@ -16,18 +12,17 @@ public class VisionResult implements StructSerializable {
     public static VisionResultStruct struct = new VisionResultStruct();
 
     Pose3d pose;
-    double timeStamp;
+    double timestamp;
     Matrix<N3, N1> stdDevs;
 
-    public VisionResult(Pose3d pose, double timeStamp) {
-        this.pose = pose;
-        this.timeStamp = timeStamp;
+    public VisionResult(Pose3d pose, double timestamp) {
+        this(pose, timestamp, null);
     }
 
 
-    public VisionResult(Pose3d pose, double timeStamp, Matrix<N3, N1> stdDevs) {
+    public VisionResult(Pose3d pose, double timestamp, Matrix<N3, N1> stdDevs) {
         this.pose = pose;
-        this.timeStamp = timeStamp;
+        this.timestamp = timestamp;
         this.stdDevs = stdDevs;
     }
 
@@ -40,7 +35,7 @@ public class VisionResult implements StructSerializable {
     }
 
     public double getTimestampSeconds() {
-        return timeStamp;
+        return timestamp;
     }
 
     public Matrix<N3,N1> getStdDevs() {
