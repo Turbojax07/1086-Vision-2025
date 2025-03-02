@@ -4,19 +4,17 @@
 
 package frc.robot.subsystems.vision.util;
 
-import java.util.List;
-
-import org.photonvision.PhotonTargetSortMode;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.struct.StructSerializable;
 
 /** Add your docs here. */
-public class VisionResult {
+public class VisionResult implements StructSerializable {
+    public static VisionResultStruct struct = new VisionResultStruct();
+
     Pose3d pose;
     double timeStamp;
     Matrix<N3, N1> stdDevs;
@@ -31,6 +29,10 @@ public class VisionResult {
         this.pose = pose;
         this.timeStamp = timeStamp;
         this.stdDevs = stdDevs;
+    }
+
+    public Pose3d getPose3d() {
+        return pose;
     }
 
     public Pose2d getPose2d() {
