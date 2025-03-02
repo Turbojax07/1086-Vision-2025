@@ -26,12 +26,10 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         VisionResult[] measuredPoses = getVisionMeasurements();
-        Logger.recordOutput("Cameras/Active", true);
-        for (int i=0; i<measuredPoses.length; i++) {
+
+        for (int i = 0; i < measuredPoses.length; i++) {
             if (measuredPoses[i] != null) {
                 Logger.recordOutput("Cameras/Camera #"+(i+1)+" Estimated Pose", measuredPoses[i].getPose2d());
-            } else {
-                Logger.recordOutput("Cameras/Camera #"+(i+1)+" Estimated Pose", new Pose2d());
             }
         }
     }
