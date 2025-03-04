@@ -6,6 +6,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.struct.MatrixStruct;
 import edu.wpi.first.util.struct.Struct;
+
 import java.nio.ByteBuffer;
 
 public class VisionResultStruct implements Struct<VisionResult> {
@@ -47,7 +48,7 @@ public class VisionResultStruct implements Struct<VisionResult> {
     @Override
     public void pack(ByteBuffer bb, VisionResult value) {
         Pose3d.struct.pack(bb, value.getPose3d());
-        bb.putDouble(value.getTimestampSeconds());
+        bb.putDouble(value.getTimestamp());
         matrixStruct.pack(bb, value.getStdDevs());
     }
 

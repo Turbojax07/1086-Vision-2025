@@ -1,35 +1,55 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.io.VisionIO;
 import frc.robot.subsystems.vision.util.VisionResult;
+
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
-    private VisionIO io;
+    CameraIO[] cameraIOs;
 
-    /** Creates a new Vision. */
-    public Vision(VisionIO io) {
-        this.io = io;
-    }
-
-    public VisionResult[] getUnreadResults() {
-        return io.getUnreadResults();
-    }
-
-    public void update(Pose2d pose) {
-        io.setRobotPose(pose);
+    /** Creates a new Vision system. */
+    public Vision(CameraIO... cameraIOs) {
+        this.cameraIOs = cameraIOs;
     }
 
     @Override
     public void periodic() {
-        io.updateInputs();
+        update(new Pose2d());
 
         VisionResult[] measuredPoses = getUnreadResults();
 
         for (int i = 0; i < measuredPoses.length; i++) {
-            Logger.recordOutput("/Vision/Camera" + (i + 1) + "/Estimated Pose", measuredPoses[i].getPose2d());
+            VisionResult measuredPose = measuredPoses[i];
+
+            if (measuredPose != null) Logger.recordOutput(String.format("/Cameras/Camera%d/Estimated_Pose", i), measuredPose.getPose2d());
+        }
+    }
+
+    public VisionResult[] getUnreadResults() {
+        ArrayList<VisionResult> results = new ArrayList<VisionResult>();
+
+        for (int i = 0; i < cameraIOs.length; i++) {
+            CameraIO cameraIO = cameraIOs[i];
+            
+            for (VisionResult result : cameraIO.getUnreadResults()) {
+                results.add(result);
+            }
+        }
+
+        return (VisionResult[]) results.toArray();
+    }
+
+    public void update(Pose2d pose) {
+        for (CameraIO cameraIO : cameraIOs) {
+            cameraIO.setRobotPose(pose);
         }
     }
 }

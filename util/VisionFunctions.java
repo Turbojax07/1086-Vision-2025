@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,34 +17,39 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-/** Add your docs here. */
 public class VisionFunctions {
     public static Pose3d calculateMultiTagResult(MultiTargetPNPResult result, Transform3d robotToCameraTransform) {
         Transform3d fieldToCamera = result.estimatedPose.best;
-        Pose3d estimatedPose = new Pose3d().plus(fieldToCamera).relativeTo(AprilTagFieldLayout.loadField(VisionConstants.field).getOrigin()).plus(robotToCameraTransform.inverse());
-        return estimatedPose;
+
+        return new Pose3d().plus(fieldToCamera).relativeTo(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark).getOrigin()).plus(robotToCameraTransform.inverse());
     }
 
     public static Matrix<N3, N1> getStdDevs(PhotonCamera camera, Pose2d estimatedPose, PhotonPoseEstimator poseEstimator) {
-        List<PhotonTrackedTarget> targets = camera.getAllUnreadResults().get(0).getTargets();
+        Matrix<N3,N1> estStdDevs = VisionConstants.singleTagStdDevs;
+
+        List<PhotonTrackedTarget> targets = camera.getAllUnreadResults().get(0).targets;
         int numTags = 0;
         double avgDist = 0;
         for (PhotonTrackedTarget target : targets) {
-            Optional<Pose3d> tagPose = poseEstimator.getFieldTags().getTagPose(target.fiducialId);
+            Optional<Pose3d> tagPose = poseEstimator.getFieldTags().getTagPose(target.getFiducialId());
             if (tagPose.isEmpty()) continue;
 
             numTags++;
             avgDist += tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
         }
 
-        if (numTags == 0) return VisionConstants.singleTagStdDevs;
-
-        if (numTags > 1) return VisionConstants.multiTagStdDevs;
+        if (numTags == 0) return estStdDevs;
 
         avgDist /= numTags;
 
-        if (numTags == 1 && avgDist > 4) return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        if (numTags > 1) estStdDevs = VisionConstants.multiTagStdDevs;
 
-        return VisionConstants.singleTagStdDevs.times(1 + (avgDist * avgDist / 30));
+        if (numTags == 1 && avgDist > 4) {
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        } else {
+            estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+        }
+
+        return estStdDevs;
     }
 }
