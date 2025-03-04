@@ -17,7 +17,6 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-/** Add your docs here. */
 public class CameraIOSim implements CameraIO {
     private VisionSystemSim visionSim;
 

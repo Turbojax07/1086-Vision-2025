@@ -13,7 +13,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-/** Add your docs here. */
 public class CameraIOReal implements CameraIO {
     private PhotonCamera camera;
     private PhotonPoseEstimator poseEstimator;
