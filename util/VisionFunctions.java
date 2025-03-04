@@ -25,8 +25,6 @@ public class VisionFunctions {
     }
 
     public static Matrix<N3, N1> getStdDevs(PhotonCamera camera, Pose2d estimatedPose, PhotonPoseEstimator poseEstimator) {
-        Matrix<N3,N1> estStdDevs = VisionConstants.singleTagStdDevs;
-
         List<PhotonTrackedTarget> targets = camera.getAllUnreadResults().get(0).targets;
         int numTags = 0;
         double dist = 0;
