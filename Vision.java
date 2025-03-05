@@ -14,9 +14,16 @@ public class Vision extends SubsystemBase {
         this.cameraIOs = cameraIOs;
     }
 
+    /**
+     * Runs once every tick the subsystem is active.
+     * 
+     * It updates the camera IO Inputs and logs the estimated pose for each camera
+     */
     @Override
     public void periodic() {
-        update(new Pose2d());
+        for (CameraIO cameraIO : cameraIOs) {
+            cameraIO.updateInputs();
+        }
 
         VisionResult[] measuredPoses = getUnreadResults();
 
