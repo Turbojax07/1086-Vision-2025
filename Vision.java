@@ -45,7 +45,7 @@ public class Vision extends SubsystemBase {
             }
         }
 
-        return (VisionResult[]) results.toArray();
+        return results.toArray(new VisionResult[0]);
     }
 
     public void update(Pose2d pose) {
