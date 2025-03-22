@@ -4,7 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.util.VisionResult;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class CameraIOReal implements CameraIO {
     public CameraIOReal(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
-        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), VisionConstants.strategy, robotToCamera);
+        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), Constants.VisionConstants.strategy, robotToCamera);
 
         inputs = new CameraIOInputsAutoLogged();
     }
