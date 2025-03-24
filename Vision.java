@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
-    CameraIO[] cameraIOs;
+    private CameraIO[] cameraIOs;
 
     /** Creates a new Vision system. */
     public Vision(CameraIO... cameraIOs) {
@@ -34,6 +34,7 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /** Gets all of the unread results for each camera. */
     public VisionResult[] getUnreadResults() {
         ArrayList<VisionResult> results = new ArrayList<VisionResult>();
 
@@ -48,6 +49,11 @@ public class Vision extends SubsystemBase {
         return results.toArray(new VisionResult[0]);
     }
 
+    /**
+     * Updates the cameras with the current pose of the robot.
+     * 
+     * @param pose The pose of the robot.
+     */
     public void update(Pose2d pose) {
         for (CameraIO cameraIO : cameraIOs) {
             cameraIO.setRobotPose(pose);

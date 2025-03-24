@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,10 @@ public class CameraIOSim implements CameraIO {
 
             if (estimatedPose.isEmpty()) continue;
 
-            visionResults[i] = new VisionResult(estimatedPose.get().estimatedPose, estimatedPose.get().timestampSeconds);
+            visionResults[i] = new VisionResult(
+                estimatedPose.get().estimatedPose,
+                estimatedPose.get().timestampSeconds,
+                VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose, poseEstimator.getFieldTags()));
         }
 
         return visionResults;
