@@ -7,6 +7,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants;
+import frc.robot.subsystems.vision.VisionConstants;
+
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -35,10 +37,10 @@ public class VisionFunctions {
             dist += tagPose.get().getTranslation().getDistance(estimatedPose.getTranslation());
         }
 
-        if (numTags == 0) return Constants.VisionConstants.singleTagStdDevs;
-        if (numTags > 1) return Constants.VisionConstants.multiTagStdDevs;
+        if (numTags == 0) return VisionConstants.singleTagStdDevs;
+        if (numTags > 1) return VisionConstants.multiTagStdDevs;
         if (dist > 4) return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
-        return Constants.VisionConstants.singleTagStdDevs.times(1 + (dist * dist / 30));
+        return VisionConstants.singleTagStdDevs.times(1 + (dist * dist / 30));
     }
 }

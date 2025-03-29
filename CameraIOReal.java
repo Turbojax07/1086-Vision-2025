@@ -23,7 +23,7 @@ public class CameraIOReal implements CameraIO {
     public CameraIOReal(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
-        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), Constants.VisionConstants.strategy, robotToCamera);
+        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), VisionConstants.strategy, robotToCamera);
 
         inputs = new CameraIOInputsAutoLogged();
     }
