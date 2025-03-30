@@ -10,7 +10,7 @@ import edu.wpi.first.util.struct.StructSerializable;
 public class VisionResult implements StructSerializable {
     private Pose3d pose;
     private double timestamp;
-    private Matrix<N3,N1> stdDevs;
+    private static Matrix<N3,N1> stdDevs;
 
     /** Creates a new VisionResult with no standard deviations. */
     public VisionResult(Pose3d pose, double timestamp) {
@@ -21,7 +21,7 @@ public class VisionResult implements StructSerializable {
     public VisionResult(Pose3d pose, double timestamp, Matrix<N3,N1> stdDevs) {
         this.pose = pose;
         this.timestamp = timestamp;
-        this.stdDevs = stdDevs;
+        VisionResult.stdDevs = stdDevs;
     }
 
     /** Gets the {@link Pose3d} of the vision result. */
@@ -40,7 +40,7 @@ public class VisionResult implements StructSerializable {
     }
 
     /** Gets the standard deviations of the vision result. */
-    public Matrix<N3,N1> getStdDevs() {
+    public static Matrix<N3,N1> getStdDevs() {
         return stdDevs;
     }
 }
