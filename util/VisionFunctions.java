@@ -6,7 +6,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.Constants;
 import frc.robot.subsystems.vision.VisionConstants;
 
 import java.util.List;
