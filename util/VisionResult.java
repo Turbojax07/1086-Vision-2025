@@ -11,7 +11,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.struct.StructSerializable;
 
 public class VisionResult implements StructSerializable {
-    private Pose3d pose;
+    private Pose3d pose3d;
     private double timestamp;
     private static Matrix<N3,N1> stdDevs;
 
@@ -22,21 +22,21 @@ public class VisionResult implements StructSerializable {
 
     /** Creates a new VisionResult with standard deviations. */
     public VisionResult(Pose3d pose, double timestamp, Matrix<N3,N1> stdDevs) {
-        this.pose = pose;
+        this.pose3d = pose;
         this.timestamp = timestamp;
         VisionResult.stdDevs = stdDevs;
     }
 
     /** Gets the {@link Pose3d} of the vision result. */
     public Pose3d getPose3d() {
-        return pose;
+        return pose3d;
     }
 
     /** Gets the {@link Pose2d} of the vision result. */
     @AutoLogOutput(key = "Vision/Pose2d")
     public Pose2d getPose2d() {
-        Logger.recordOutput("Vision/Pose2d", pose.toPose2d());
-        return pose.toPose2d();
+        Logger.recordOutput("Vision/Pose2d", pose3d.toPose2d());
+        return pose3d.toPose2d();
     }
 
     /** Gets the timestamp of the vision result. */
