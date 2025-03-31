@@ -1,5 +1,8 @@
 package frc.robot.subsystems.vision.util;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -30,7 +33,9 @@ public class VisionResult implements StructSerializable {
     }
 
     /** Gets the {@link Pose2d} of the vision result. */
+    @AutoLogOutput(key = "Vision/Pose2d")
     public Pose2d getPose2d() {
+        Logger.recordOutput("Vision/Pose2d", pose.toPose2d());
         return pose.toPose2d();
     }
 
