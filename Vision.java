@@ -30,7 +30,8 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < measuredPoses.length; i++) {
             VisionResult measuredPose = measuredPoses[i];
 
-            if (measuredPose != null) Logger.recordOutput(String.format("/Cameras/Camera%d/Estimated_Pose", i), measuredPose.getPose2d());
+            if (measuredPose != null)
+                Logger.recordOutput(String.format("/Cameras/Camera%d/Estimated_Pose", i), measuredPose.getPose2d());
         }
     }
 
@@ -41,9 +42,7 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < cameraIOs.length; i++) {
             CameraIO cameraIO = cameraIOs[i];
 
-            for (VisionResult result : cameraIO.getUnreadResults()) {
-                results.add(result);
-            }
+            results.addAll(cameraIO.getUnreadResults());
         }
 
         return results.toArray(new VisionResult[0]);

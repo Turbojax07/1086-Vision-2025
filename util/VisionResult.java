@@ -1,8 +1,5 @@
 package frc.robot.subsystems.vision.util;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -13,7 +10,7 @@ import edu.wpi.first.util.struct.StructSerializable;
 public class VisionResult implements StructSerializable {
     private Pose3d pose3d;
     private double timestamp;
-    private Matrix<N3,N1> stdDevs;
+    private Matrix<N3, N1> stdDevs;
 
     /** Creates a new VisionResult with no standard deviations. */
     public VisionResult(Pose3d pose, double timestamp) {
@@ -21,7 +18,7 @@ public class VisionResult implements StructSerializable {
     }
 
     /** Creates a new VisionResult with standard deviations. */
-    public VisionResult(Pose3d pose, double timestamp, Matrix<N3,N1> stdDevs) {
+    public VisionResult(Pose3d pose, double timestamp, Matrix<N3, N1> stdDevs) {
         this.pose3d = pose;
         this.timestamp = timestamp;
         this.stdDevs = stdDevs;
@@ -43,7 +40,7 @@ public class VisionResult implements StructSerializable {
     }
 
     /** Gets the standard deviations of the vision result. */
-    public Matrix<N3,N1> getStdDevs() {
+    public Matrix<N3, N1> getStdDevs() {
         return stdDevs;
     }
 }

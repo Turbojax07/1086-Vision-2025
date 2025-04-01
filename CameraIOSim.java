@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -40,7 +41,8 @@ public class CameraIOSim implements CameraIO {
         visionSim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
         visionSim.addCamera(simCamera, robotToCamera);
 
-        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
+        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
 
         inputs = new CameraIOInputsAutoLogged();
     }
@@ -49,7 +51,7 @@ public class CameraIOSim implements CameraIO {
     public void updateInputs() {
         inputs.cameraName = getName();
         inputs.isActive = isConnected();
-        inputs.unreadResults = getUnreadResults();
+        inputs.unreadResults = (VisionResult[]) getUnreadResults().toArray();
     }
 
     @Override
@@ -58,20 +60,21 @@ public class CameraIOSim implements CameraIO {
     }
 
     @Override
-    public VisionResult[] getUnreadResults() {
+    public ArrayList<VisionResult> getUnreadResults() {
         List<PhotonPipelineResult> results = simCamera.getCamera().getAllUnreadResults();
 
-        VisionResult[] visionResults = new VisionResult[results.size()];
+        ArrayList<VisionResult> visionResults = new ArrayList<VisionResult>(results.size());
 
         for (int i = 0; i < results.size(); i++) {
             Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(results.get(i));
 
             if (estimatedPose.isEmpty()) continue;
 
-            visionResults[i] = new VisionResult(
-                estimatedPose.get().estimatedPose,
-                estimatedPose.get().timestampSeconds,
-                VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose, poseEstimator.getFieldTags()));
+            visionResults.add(new VisionResult(
+                    estimatedPose.get().estimatedPose,
+                    estimatedPose.get().timestampSeconds,
+                    VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose,
+                            poseEstimator.getFieldTags())));
         }
 
         return visionResults;
@@ -82,8 +85,8 @@ public class CameraIOSim implements CameraIO {
         return true;
     }
 
-	@Override
-	public void setRobotPose(Pose2d pose) {
-		visionSim.update(pose);
-	}
+    @Override
+    public void setRobotPose(Pose2d pose) {
+        visionSim.update(pose);
+    }
 }

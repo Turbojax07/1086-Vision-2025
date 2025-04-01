@@ -9,7 +9,7 @@ import edu.wpi.first.util.struct.Struct;
 import java.nio.ByteBuffer;
 
 public class VisionResultStruct implements Struct<VisionResult> {
-    private MatrixStruct<N3,N1> matrixStruct = Matrix.getStruct(N3.instance, N1.instance);
+    private MatrixStruct<N3, N1> matrixStruct = Matrix.getStruct(N3.instance, N1.instance);
 
     @Override
     public Class<VisionResult> getTypeClass() {
@@ -40,7 +40,7 @@ public class VisionResultStruct implements Struct<VisionResult> {
     public VisionResult unpack(ByteBuffer bb) {
         Pose3d pose = Pose3d.struct.unpack(bb);
         Double timestamp = bb.getDouble();
-        Matrix<N3,N1> stdDevs = matrixStruct.unpack(bb);
+        Matrix<N3, N1> stdDevs = matrixStruct.unpack(bb);
         return new VisionResult(pose, timestamp, stdDevs);
     }
 

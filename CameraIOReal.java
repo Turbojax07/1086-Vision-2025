@@ -23,7 +23,8 @@ public class CameraIOReal implements CameraIO {
     public CameraIOReal(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
-        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), VisionConstants.strategy, robotToCamera);
+        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
+                VisionConstants.strategy, robotToCamera);
 
         inputs = new CameraIOInputsAutoLogged();
     }
@@ -32,7 +33,7 @@ public class CameraIOReal implements CameraIO {
     public void updateInputs() {
         inputs.cameraName = getName();
         inputs.isActive = isConnected();
-        inputs.unreadResults = getUnreadResults();
+        inputs.unreadResults = (VisionResult[]) getUnreadResults().toArray();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class CameraIOReal implements CameraIO {
     }
 
     @Override
-    public VisionResult[] getUnreadResults() {
+    public ArrayList<VisionResult> getUnreadResults() {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         ArrayList<VisionResult> visionResults = new ArrayList<VisionResult>(results.size());
@@ -52,12 +53,13 @@ public class CameraIOReal implements CameraIO {
             if (estimatedPose.isEmpty()) continue;
 
             visionResults.add(new VisionResult(
-                estimatedPose.get().estimatedPose,
-                estimatedPose.get().timestampSeconds,
-                VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose, poseEstimator.getFieldTags())));
+                    estimatedPose.get().estimatedPose,
+                    estimatedPose.get().timestampSeconds,
+                    VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose,
+                            poseEstimator.getFieldTags())));
         }
 
-        return (VisionResult[]) visionResults.toArray();
+        return visionResults;
     }
 
     @Override
