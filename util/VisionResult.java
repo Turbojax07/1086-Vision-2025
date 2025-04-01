@@ -33,9 +33,7 @@ public class VisionResult implements StructSerializable {
     }
 
     /** Gets the {@link Pose2d} of the vision result. */
-    @AutoLogOutput(key = "Vision/Pose2d")
     public Pose2d getPose2d() {
-        Logger.recordOutput("Vision/Pose2d", pose3d.toPose2d());
         return pose3d.toPose2d();
     }
 
