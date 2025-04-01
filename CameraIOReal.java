@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -43,20 +44,20 @@ public class CameraIOReal implements CameraIO {
     public VisionResult[] getUnreadResults() {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
-        VisionResult[] visionResults = new VisionResult[results.size()];
+        ArrayList<VisionResult> visionResults = new ArrayList<VisionResult>(results.size());
 
         for (int i = 0; i < results.size(); i++) {
             Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(results.get(i));
 
             if (estimatedPose.isEmpty()) continue;
 
-            visionResults[i] = new VisionResult(
+            visionResults.add(new VisionResult(
                 estimatedPose.get().estimatedPose,
                 estimatedPose.get().timestampSeconds,
-                VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose, poseEstimator.getFieldTags()));
+                VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose, poseEstimator.getFieldTags())));
         }
 
-        return visionResults;
+        return (VisionResult[]) visionResults.toArray();
     }
 
     @Override
