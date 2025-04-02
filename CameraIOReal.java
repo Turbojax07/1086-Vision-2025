@@ -33,7 +33,7 @@ public class CameraIOReal implements CameraIO {
     public void updateInputs() {
         inputs.cameraName = getName();
         inputs.isActive = isConnected();
-        inputs.unreadResults = (VisionResult[]) getUnreadResults().toArray();
+        inputs.unreadResults = getUnreadResults().toArray(new VisionResult[0]);
     }
 
     @Override
