@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.vision.util.VisionResult;
-import java.util.ArrayList;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface CameraIO {
@@ -19,15 +18,6 @@ public interface CameraIO {
      * @param inputs The inputs to update.
      */
     public void updateInputs(CameraIOInputs inputs);
-
-    /** Gets the name of the camera. */
-    public String getName();
-
-    /** Gets all of the unread vision results from each camera. */
-    public ArrayList<VisionResult> getUnreadResults();
-
-    /** Gets whether or not the camera is connected to the robot. */
-    public boolean isConnected();
 
     /**
      * Updates the cameras with the current pose of the robot.

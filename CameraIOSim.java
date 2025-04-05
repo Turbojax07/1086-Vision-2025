@@ -45,18 +45,6 @@ public class CameraIOSim implements CameraIO {
 
     @Override
     public void updateInputs(CameraIOInputs inputs) {
-        inputs.cameraName = getName();
-        inputs.isActive = isConnected();
-        inputs.unreadResults = getUnreadResults().toArray(new VisionResult[0]);
-    }
-
-    @Override
-    public String getName() {
-        return camera.getName();
-    }
-
-    @Override
-    public ArrayList<VisionResult> getUnreadResults() {
         List<PhotonPipelineResult> results = simCamera.getCamera().getAllUnreadResults();
 
         ArrayList<VisionResult> visionResults = new ArrayList<VisionResult>(results.size());
@@ -73,12 +61,9 @@ public class CameraIOSim implements CameraIO {
                             poseEstimator.getFieldTags())));
         }
 
-        return visionResults;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return true;
+        inputs.cameraName = camera.getName();
+        inputs.isActive = camera.isConnected();
+        inputs.unreadResults = visionResults.toArray(new VisionResult[0]);
     }
 
     @Override
