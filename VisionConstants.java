@@ -15,10 +15,8 @@ public class VisionConstants {
     public static final String lCameraName = "CamLeft";
     public static final String rCameraName = "CamRight";
 
-    public static final Transform3d lCameraTransform = new Transform3d(Inches.of(8.410427), Inches.of(11.276584),
-            Inches.of(8.209095), new Rotation3d(Degrees.zero(), Degrees.of(-36.053760), Degrees.of( 20)));
-    public static final Transform3d rCameraTransform = new Transform3d(Inches.of(8.410427), Inches.of(11.276584),
-            Inches.of(8.209095), new Rotation3d(Degrees.zero(), Degrees.of(-36.053760), Degrees.of(-20)));
+    public static final Transform3d lCameraTransform = new Transform3d(Inches.of(8.410427), Inches.of(11.276584), Inches.of(8.209095), new Rotation3d(Degrees.zero(), Degrees.of(-36.053760), Degrees.of( 20)));
+    public static final Transform3d rCameraTransform = new Transform3d(Inches.of(8.410427), Inches.of(11.276584), Inches.of(8.209095), new Rotation3d(Degrees.zero(), Degrees.of(-36.053760), Degrees.of(-20)));
 
     public static final PoseStrategy strategy = PoseStrategy.LOWEST_AMBIGUITY;
     public static final AprilTagFields field = AprilTagFields.kDefaultField;

@@ -37,7 +37,7 @@ public class Vision extends SubsystemBase {
 
             Logger.processInputs("/RealOutputs/Vision/" + cameraIO.getName(), cameraInputs[i]);
 
-            Logger.recordOutput("/Vision/" + cameraIO.getName(), unreadResults.get(unreadResults.size()).getPose2d());
+            Logger.recordOutput("/Vision/" + cameraIO.getName() + "/LatestPose", unreadResults.get(unreadResults.size()).getPose2d());
         }
     }
 
