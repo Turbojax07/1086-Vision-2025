@@ -12,12 +12,23 @@ public class VisionResult implements StructSerializable {
     private double timestamp;
     private Matrix<N3, N1> stdDevs;
 
-    /** Creates a new VisionResult with no standard deviations. */
+    /**
+     * Creates a new VisionResult with no standard deviations.
+     * 
+     * @param pose The pose to record
+     * @param timestamp The time that the robot was at this pose.
+     */
     public VisionResult(Pose3d pose, double timestamp) {
         this(pose, timestamp, null);
     }
 
-    /** Creates a new VisionResult with standard deviations. */
+    /**
+     * Creates a new VisionResult with standard deviations.
+     * 
+     * @param pose The pose to record.
+     * @param timestamp The time that the robot was at this pose.
+     * @param stdDevs The standard deviations to use.
+     */
     public VisionResult(Pose3d pose, double timestamp, Matrix<N3, N1> stdDevs) {
         this.pose3d = pose;
         this.timestamp = timestamp;

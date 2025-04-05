@@ -8,6 +8,7 @@ import edu.wpi.first.math.struct.MatrixStruct;
 import edu.wpi.first.util.struct.Struct;
 import java.nio.ByteBuffer;
 
+/** This class allows raw VisionResults to be logged to NetworkTables. */
 public class VisionResultStruct implements Struct<VisionResult> {
     private MatrixStruct<N3, N1> matrixStruct = Matrix.getStruct(N3.instance, N1.instance);
 
