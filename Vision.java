@@ -8,10 +8,17 @@ import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
     private CameraIO[] cameraIOs;
+    private CameraIOInputsAutoLogged[] cameraInputs;
 
     /** Creates a new Vision system. */
     public Vision(CameraIO... cameraIOs) {
         this.cameraIOs = cameraIOs;
+
+        cameraInputs = new CameraIOInputsAutoLogged[cameraIOs.length];
+
+        for (int i = 0; i < cameraIOs.length; i++) {
+            cameraInputs[i] = new CameraIOInputsAutoLogged();
+        }
     }
 
     /**
@@ -21,31 +28,30 @@ public class Vision extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        for (CameraIO cameraIO : cameraIOs) {
-            cameraIO.updateInputs();
-        }
+        for (int i = 0; i < cameraIOs.length; i++) {
+            CameraIO cameraIO = cameraIOs[i];
 
-        VisionResult[] measuredPoses = getUnreadResults();
+            cameraIO.updateInputs(cameraInputs[i]);
 
-        for (int i = 0; i < measuredPoses.length; i++) {
-            VisionResult measuredPose = measuredPoses[i];
+            ArrayList<VisionResult> unreadResults = cameraIO.getUnreadResults();
 
-            if (measuredPose != null)
-                Logger.recordOutput(String.format("/Cameras/Camera%d/Estimated_Pose", i), measuredPose.getPose2d());
+            Logger.processInputs("/RealOutputs/Vision/" + cameraIO.getName(), cameraInputs[i]);
+
+            Logger.recordOutput("/Vision/" + cameraIO.getName(), unreadResults.get(unreadResults.size()).getPose2d());
         }
     }
 
     /** Gets all of the unread results for each camera. */
     public VisionResult[] getUnreadResults() {
-        ArrayList<VisionResult> results = new ArrayList<VisionResult>();
+        ArrayList<VisionResult> allResults = new ArrayList<VisionResult>();
 
-        for (int i = 0; i < cameraIOs.length; i++) {
-            CameraIO cameraIO = cameraIOs[i];
-
-            results.addAll(cameraIO.getUnreadResults());
+        for (int i = 0; i < cameraInputs.length; i++) {
+            for (VisionResult result : cameraInputs[i].unreadResults) {
+                allResults.add(result);
+            }
         }
 
-        return results.toArray(new VisionResult[0]);
+        return allResults.toArray(new VisionResult[0]);
     }
 
     /**

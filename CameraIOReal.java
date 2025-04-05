@@ -18,19 +18,15 @@ public class CameraIOReal implements CameraIO {
     private PhotonCamera camera;
     private PhotonPoseEstimator poseEstimator;
 
-    private CameraIOInputsAutoLogged inputs;
-
     public CameraIOReal(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
         poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
                 VisionConstants.strategy, robotToCamera);
-
-        inputs = new CameraIOInputsAutoLogged();
     }
 
     @Override
-    public void updateInputs() {
+    public void updateInputs(CameraIOInputs inputs) {
         inputs.cameraName = getName();
         inputs.isActive = isConnected();
         inputs.unreadResults = getUnreadResults().toArray(new VisionResult[0]);

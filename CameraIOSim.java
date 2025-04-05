@@ -26,8 +26,6 @@ public class CameraIOSim implements CameraIO {
     private PhotonCameraSim simCamera;
     private PhotonPoseEstimator poseEstimator;
 
-    private CameraIOInputsAutoLogged inputs;
-
     public CameraIOSim(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
@@ -43,12 +41,10 @@ public class CameraIOSim implements CameraIO {
 
         poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
-
-        inputs = new CameraIOInputsAutoLogged();
     }
 
     @Override
-    public void updateInputs() {
+    public void updateInputs(CameraIOInputs inputs) {
         inputs.cameraName = getName();
         inputs.isActive = isConnected();
         inputs.unreadResults = getUnreadResults().toArray(new VisionResult[0]);

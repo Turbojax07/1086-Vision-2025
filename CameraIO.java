@@ -18,7 +18,7 @@ public interface CameraIO {
      * 
      * @param inputs The inputs to update.
      */
-    public void updateInputs();
+    public void updateInputs(CameraIOInputs inputs);
 
     /** Gets the name of the camera. */
     public String getName();
