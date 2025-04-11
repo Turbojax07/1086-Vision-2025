@@ -54,4 +54,7 @@ public class VisionResult implements StructSerializable {
     public Matrix<N3, N1> getStdDevs() {
         return stdDevs;
     }
+
+    /** VisionResult struct for serialization. */
+    public static final VisionResultStruct struct = new VisionResultStruct();
 }
