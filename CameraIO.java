@@ -7,9 +7,9 @@ import org.littletonrobotics.junction.AutoLog;
 public interface CameraIO {
     @AutoLog
     public class CameraIOInputs {
-        String cameraName;
-        VisionResult[] unreadResults;
-        boolean isActive;
+        String cameraName = "";
+        VisionResult[] unreadResults = new VisionResult[0];
+        boolean isActive = false;
     }
 
     /**
