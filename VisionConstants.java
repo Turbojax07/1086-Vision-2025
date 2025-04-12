@@ -1,7 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import static edu.wpi.first.units.Units.*;
-
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -15,8 +13,8 @@ public class VisionConstants {
     public static final String lCameraName = "CamLeft";
     public static final String rCameraName = "CamRight";
 
-    public static final Transform3d lCameraTransform = new Transform3d(Inches.of(8.410427), Inches.of(11.276584), Inches.of(8.209095), new Rotation3d(Degrees.zero(), Degrees.of(-36.053760), Degrees.of( 20)));
-    public static final Transform3d rCameraTransform = new Transform3d(Inches.of(8.410427), Inches.of(11.276584), Inches.of(8.209095), new Rotation3d(Degrees.zero(), Degrees.of(-36.053760), Degrees.of(-20)));
+    public static final Transform3d lCameraTransform = new Transform3d(0.2136, 0.2864, 0.2085, new Rotation3d(0, -Math.PI / 5,  Math.PI / 9));
+    public static final Transform3d rCameraTransform = new Transform3d(0.2136, 0.2864, 0.2085, new Rotation3d(0, -Math.PI / 5, -Math.PI / 9));
 
     public static final PoseStrategy strategy = PoseStrategy.LOWEST_AMBIGUITY;
     public static final AprilTagFields field = AprilTagFields.kDefaultField;
