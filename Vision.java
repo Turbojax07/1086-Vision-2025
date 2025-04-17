@@ -29,9 +29,7 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         for (int i = 0; i < cameraIOs.length; i++) {
-            CameraIO cameraIO = cameraIOs[i];
-
-            cameraIO.updateInputs(cameraInputs[i]);
+            cameraIOs[i].updateInputs(cameraInputs[i]);
 
             VisionResult[] unreadResults = cameraInputs[i].unreadResults;
 
