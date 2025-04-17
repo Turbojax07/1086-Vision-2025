@@ -55,6 +55,17 @@ public class VisionResult implements StructSerializable {
         return stdDevs;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof VisionResult result) {
+            return pose3d.equals(result.pose3d) &&
+                   timestamp == result.timestamp &&
+                   stdDevs.equals(result.stdDevs);
+        }
+
+        return false;
+    }
+
     /** VisionResult struct for serialization. */
     public static final VisionResultStruct struct = new VisionResultStruct();
 }
