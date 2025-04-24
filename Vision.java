@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,7 +24,7 @@ public class Vision extends SubsystemBase {
 
     /**
      * Runs once every tick the subsystem is active.
-     * 
+     *
      * It updates the camera IO Inputs and logs the estimated pose for each camera
      */
     @Override
@@ -36,7 +37,7 @@ public class Vision extends SubsystemBase {
             Logger.processInputs("/RealOutputs/Vision/" + cameraInputs[i].cameraName, cameraInputs[i]);
 
             if (unreadResults.length == 0) return;
-            
+
             Logger.recordOutput("/Vision/" + cameraInputs[i].cameraName + "/LatestPose", unreadResults[unreadResults.length - 1].getPose2d());
         }
     }
@@ -56,7 +57,7 @@ public class Vision extends SubsystemBase {
 
     /**
      * Updates the cameras with the current pose of the robot.
-     * 
+     *
      * @param pose The pose of the robot.
      */
     public void update(Pose2d pose) {

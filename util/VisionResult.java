@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.math.Matrix;
@@ -14,7 +15,7 @@ public class VisionResult implements StructSerializable {
 
     /**
      * Creates a new VisionResult with no standard deviations.
-     * 
+     *
      * @param pose The pose to record
      * @param timestamp The time that the robot was at this pose.
      */
@@ -24,7 +25,7 @@ public class VisionResult implements StructSerializable {
 
     /**
      * Creates a new VisionResult with standard deviations.
-     * 
+     *
      * @param pose The pose to record.
      * @param timestamp The time that the robot was at this pose.
      * @param stdDevs The standard deviations to use.

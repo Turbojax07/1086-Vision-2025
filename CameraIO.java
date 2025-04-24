@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,14 +15,14 @@ public interface CameraIO {
 
     /**
      * Updates a set of IO inputs with current values.
-     * 
+     *
      * @param inputs The inputs to update.
      */
     public void updateInputs(CameraIOInputs inputs);
 
     /**
      * Updates the cameras with the current pose of the robot.
-     * 
+     *
      * @param pose The pose of the robot.
      */
     public void setRobotPose(Pose2d robotPose);

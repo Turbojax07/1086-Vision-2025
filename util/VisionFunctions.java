@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -16,7 +17,7 @@ public class VisionFunctions {
     /**
      * Estimates the standard deviations that should be used for a pose given the
      * distance and number of cameras that can see the target.
-     * 
+     *
      * @param result The latest vision result
      * @param estimatedPose The pose of the robot.
      * @param layout The {@link AprilTagFieldLayout} in use.
@@ -25,7 +26,7 @@ public class VisionFunctions {
         List<PhotonTrackedTarget> targets = result.targets;
         int numTags = 0;
         double dist = 0;
-        
+
         for (PhotonTrackedTarget target : targets) {
             Optional<Pose3d> tagPose = layout.getTagPose(target.getFiducialId());
 
@@ -39,7 +40,7 @@ public class VisionFunctions {
         }
 
         if (numTags == 0) return VisionConstants.singleTagStdDevs;
-        
+
         if (numTags > 1) return VisionConstants.multiTagStdDevs;
 
         if (dist > 4) return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
