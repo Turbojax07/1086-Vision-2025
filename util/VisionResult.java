@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.math.Matrix;
@@ -59,9 +58,9 @@ public class VisionResult implements StructSerializable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof VisionResult result) {
-            return pose3d.equals(result.pose3d) &&
-                   timestamp == result.timestamp &&
-                   stdDevs.equals(result.stdDevs);
+            return pose3d.equals(result.pose3d)
+                    && timestamp == result.timestamp
+                    && stdDevs.equals(result.stdDevs);
         }
 
         return false;

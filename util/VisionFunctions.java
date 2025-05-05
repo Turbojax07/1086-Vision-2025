@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -15,14 +14,15 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionFunctions {
     /**
-     * Estimates the standard deviations that should be used for a pose given the
-     * distance and number of cameras that can see the target.
+     * Estimates the standard deviations that should be used for a pose given the distance and
+     * number of cameras that can see the target.
      *
      * @param result The latest vision result
      * @param estimatedPose The pose of the robot.
      * @param layout The {@link AprilTagFieldLayout} in use.
      */
-    public static Matrix<N3, N1> getStdDevs(PhotonPipelineResult result, Pose3d estimatedPose, AprilTagFieldLayout layout) {
+    public static Matrix<N3, N1> getStdDevs(
+            PhotonPipelineResult result, Pose3d estimatedPose, AprilTagFieldLayout layout) {
         List<PhotonTrackedTarget> targets = result.targets;
         int numTags = 0;
         double dist = 0;

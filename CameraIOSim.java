@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -40,8 +39,11 @@ public class CameraIOSim implements CameraIO {
         visionSim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
         visionSim.addCamera(simCamera, robotToCamera);
 
-        poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
+        poseEstimator =
+                new PhotonPoseEstimator(
+                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
+                        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                        robotToCamera);
     }
 
     @Override
@@ -55,11 +57,14 @@ public class CameraIOSim implements CameraIO {
 
             if (estimatedPose.isEmpty()) continue;
 
-            visionResults.add(new VisionResult(
-                    estimatedPose.get().estimatedPose,
-                    estimatedPose.get().timestampSeconds,
-                    VisionFunctions.getStdDevs(results.get(i), estimatedPose.get().estimatedPose,
-                            poseEstimator.getFieldTags())));
+            visionResults.add(
+                    new VisionResult(
+                            estimatedPose.get().estimatedPose,
+                            estimatedPose.get().timestampSeconds,
+                            VisionFunctions.getStdDevs(
+                                    results.get(i),
+                                    estimatedPose.get().estimatedPose,
+                                    poseEstimator.getFieldTags())));
         }
 
         inputs.cameraName = camera.getName();

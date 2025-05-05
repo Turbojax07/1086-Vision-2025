@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.vision.util;
 
 import edu.wpi.first.math.Matrix;
@@ -35,7 +34,7 @@ public class VisionResultStruct implements Struct<VisionResult> {
 
     @Override
     public Struct<?>[] getNested() {
-        return new Struct<?>[] { Pose3d.struct, matrixStruct };
+        return new Struct<?>[] {Pose3d.struct, matrixStruct};
     }
 
     @Override
