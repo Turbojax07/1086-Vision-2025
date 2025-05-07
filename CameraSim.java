@@ -19,14 +19,16 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-public class CameraIOSim implements CameraIO {
+public class CameraSim extends Camera {
     private VisionSystemSim visionSim;
 
     private PhotonCamera camera;
     private PhotonCameraSim simCamera;
     private PhotonPoseEstimator poseEstimator;
 
-    public CameraIOSim(String cameraName, Transform3d robotToCamera) {
+    private VisionResult[] unreadResults;
+
+    public CameraSim(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
         SimCameraProperties camProperties = new SimCameraProperties();
@@ -39,15 +41,14 @@ public class CameraIOSim implements CameraIO {
         visionSim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
         visionSim.addCamera(simCamera, robotToCamera);
 
-        poseEstimator =
-                new PhotonPoseEstimator(
-                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
-                        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                        robotToCamera);
+        poseEstimator = new PhotonPoseEstimator(
+                AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                robotToCamera);
     }
 
     @Override
-    public void updateInputs(CameraIOInputs inputs) {
+    public void periodic() {
         List<PhotonPipelineResult> results = simCamera.getCamera().getAllUnreadResults();
 
         ArrayList<VisionResult> visionResults = new ArrayList<VisionResult>(results.size());
@@ -58,18 +59,31 @@ public class CameraIOSim implements CameraIO {
             if (estimatedPose.isEmpty()) continue;
 
             visionResults.add(
-                    new VisionResult(
-                            estimatedPose.get().estimatedPose,
-                            estimatedPose.get().timestampSeconds,
-                            VisionFunctions.getStdDevs(
-                                    results.get(i),
-                                    estimatedPose.get().estimatedPose,
-                                    poseEstimator.getFieldTags())));
+                new VisionResult(
+                    estimatedPose.get().estimatedPose,
+                    estimatedPose.get().timestampSeconds,
+                    VisionFunctions.getStdDevs(
+                        results.get(i),
+                        estimatedPose.get().estimatedPose,
+                        poseEstimator.getFieldTags())));
         }
 
-        inputs.cameraName = camera.getName();
-        inputs.isActive = camera.isConnected();
-        inputs.unreadResults = visionResults.toArray(new VisionResult[0]);
+        unreadResults = visionResults.toArray(new VisionResult[0]);
+    }
+
+    @Override
+    public String getCameraName() {
+        return camera.getName();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return camera.isConnected();
+    }
+
+    @Override
+    public VisionResult[] getUnreadResults() {
+        return unreadResults;
     }
 
     @Override

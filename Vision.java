@@ -3,22 +3,15 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.util.VisionResult;
+import frc.robot.util.TurboLogger;
 import java.util.ArrayList;
-import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
-    private CameraIO[] cameraIOs;
-    private CameraIOInputsAutoLogged[] cameraInputs;
+    private Camera[] cameras;
 
     /** Creates a new Vision system. */
-    public Vision(CameraIO... cameraIOs) {
-        this.cameraIOs = cameraIOs;
-
-        cameraInputs = new CameraIOInputsAutoLogged[cameraIOs.length];
-
-        for (int i = 0; i < cameraIOs.length; i++) {
-            cameraInputs[i] = new CameraIOInputsAutoLogged();
-        }
+    public Vision(Camera... cameras) {
+        this.cameras = cameras;
     }
 
     /**
@@ -28,19 +21,12 @@ public class Vision extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        for (int i = 0; i < cameraIOs.length; i++) {
-            cameraIOs[i].updateInputs(cameraInputs[i]);
-
-            VisionResult[] unreadResults = cameraInputs[i].unreadResults;
-
-            Logger.processInputs(
-                    "/RealOutputs/Vision/" + cameraInputs[i].cameraName, cameraInputs[i]);
+        for (int i = 0; i < cameras.length; i++) {
+            VisionResult[] unreadResults = cameras[i].getUnreadResults();
 
             if (unreadResults.length == 0) return;
 
-            Logger.recordOutput(
-                    "/Vision/" + cameraInputs[i].cameraName + "/LatestPose",
-                    unreadResults[unreadResults.length - 1].getPose2d());
+            TurboLogger.log("/Vision/" + cameras[i].getCameraName() + "/LatestPose", unreadResults[unreadResults.length - 1].getPose2d());
         }
     }
 
@@ -48,8 +34,8 @@ public class Vision extends SubsystemBase {
     public VisionResult[] getUnreadResults() {
         ArrayList<VisionResult> allResults = new ArrayList<VisionResult>();
 
-        for (int i = 0; i < cameraInputs.length; i++) {
-            for (VisionResult result : cameraInputs[i].unreadResults) {
+        for (int i = 0; i < cameras.length; i++) {
+            for (VisionResult result : cameras[i].getUnreadResults()) {
                 allResults.add(result);
             }
         }
@@ -63,8 +49,8 @@ public class Vision extends SubsystemBase {
      * @param pose The pose of the robot.
      */
     public void update(Pose2d pose) {
-        for (CameraIO cameraIO : cameraIOs) {
-            cameraIO.setRobotPose(pose);
+        for (Camera camera : cameras) {
+            camera.setRobotPose(pose);
         }
     }
 }

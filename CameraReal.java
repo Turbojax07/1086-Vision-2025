@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.util.VisionFunctions;
 import frc.robot.subsystems.vision.util.VisionResult;
+import frc.robot.util.TurboLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,11 +15,13 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-public class CameraIOReal implements CameraIO {
+public class CameraReal extends Camera {
     private PhotonCamera camera;
     private PhotonPoseEstimator poseEstimator;
 
-    public CameraIOReal(String cameraName, Transform3d robotToCamera) {
+    private VisionResult[] unreadResults;
+
+    public CameraReal(String cameraName, Transform3d robotToCamera) {
         camera = new PhotonCamera(cameraName);
 
         poseEstimator =
@@ -29,7 +32,7 @@ public class CameraIOReal implements CameraIO {
     }
 
     @Override
-    public void updateInputs(CameraIOInputs inputs) {
+    public void periodic() {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         ArrayList<VisionResult> visionResults = new ArrayList<VisionResult>(results.size());
@@ -39,19 +42,34 @@ public class CameraIOReal implements CameraIO {
 
             if (estimatedPose.isEmpty()) continue;
 
-            visionResults.add(
-                    new VisionResult(
-                            estimatedPose.get().estimatedPose,
-                            estimatedPose.get().timestampSeconds,
-                            VisionFunctions.getStdDevs(
-                                    results.get(i),
-                                    estimatedPose.get().estimatedPose,
-                                    poseEstimator.getFieldTags())));
+            visionResults.add(new VisionResult(
+                estimatedPose.get().estimatedPose,
+                estimatedPose.get().timestampSeconds,
+                VisionFunctions.getStdDevs(
+                    results.get(i),
+                    estimatedPose.get().estimatedPose,
+                    poseEstimator.getFieldTags())));
         }
 
-        inputs.cameraName = camera.getName();
-        inputs.isActive = camera.isConnected();
-        inputs.unreadResults = visionResults.toArray(new VisionResult[0]);
+        unreadResults = visionResults.toArray(new VisionResult[0]);
+
+        TurboLogger.log("/Vision/" + getCameraName() + "/UnreadResults", unreadResults);
+        TurboLogger.log("/Vision/" + getCameraName() + "/IsConnected", isConnected());
+    }
+
+    @Override
+    public String getCameraName() {
+        return camera.getName();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return camera.isConnected();
+    }
+
+    @Override
+    public VisionResult[] getUnreadResults() {
+        return unreadResults;
     }
 
     @Override
